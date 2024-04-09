@@ -1,3 +1,4 @@
+
 # HomeAI - Your Personal AI Assistant
 
 Welcome to HomeAI, your next-generation home AI assistant that leverages some of the most advanced technologies available to create a truly interactive and responsive home environment. HomeAI integrates OpenAI's GPT-4-turbo for smart decision-making and content generation, ElevenLabs for high-quality text-to-speech, OpenAI Whisper for accurate speech-to-text, and Pico Labs' Porcupine for efficient wake word detection, making it an all-in-one solution for your smart home needs.
@@ -44,3 +45,57 @@ HomeAI is designed to be your personal assistant, providing various services suc
 HomeAI is at the forefront of home assistant technology, integrating powerful tools to make your life easier and your home smarter. If you have any questions or need further assistance, please open an issue in this repository.
 
 Thank you for choosing HomeAI as your home's AI assistant.
+
+## Setting Up Pipenv on Ubuntu
+
+`Pipenv` is a dependency manager for Python projects. If you're using Ubuntu, you can follow these steps to install and use `Pipenv` with HomeAI.
+
+### Installation
+
+1. **Update your package list** to ensure you can download the latest versions of the software:
+
+\```bash
+sudo apt update
+\```
+
+2. **Install Pipenv** using `apt`. Pipenv allows you to create a virtual environment for the project and manage its dependencies:
+
+\```bash
+sudo apt install pipenv
+\```
+
+### Usage
+
+After installing Pipenv, you can set up your project's environment and install its dependencies.
+
+1. **Navigate to your project directory** where the `Pipfile` and `Pipfile.lock` are located.
+
+\```bash
+cd path/to/homeAI
+\```
+
+2. **Install project dependencies** by running:
+
+\```bash
+pipenv install
+\```
+
+This command reads the `Pipfile` and installs the necessary packages inside a new virtual environment specifically for HomeAI.
+
+3. **Activate the virtual environment** to use it. This step ensures that you are using the correct versions of the tools and libraries required by HomeAI:
+
+\```bash
+pipenv shell
+\```
+
+4. **Run HomeAI** within the virtual environment. Any Python command or script should now be run within this environment to ensure consistency and avoid conflicts with other projects.
+
+### Exiting the Virtual Environment
+
+When you're done working with HomeAI, you can exit the virtual environment by typing:
+
+\```bash
+exit
+\```
+
+This command will return you to your system's global Python environment, where you can work on other projects or perform general tasks.

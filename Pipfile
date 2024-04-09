@@ -12,6 +12,11 @@ langchain = "*"
 requests = "*"
 langchain-community = "*"
 pydub = "*"
+webrtcvad = "*"
+openai = "*"
+langchainhub = "*"
+langchain-openai = "*"
+faiss-cpu = "*"
 
 [dev-packages]
 

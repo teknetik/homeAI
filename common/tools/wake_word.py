@@ -54,7 +54,7 @@ def listen(keyword_paths, recorder):
         logger.info("Stopping ...")
 
     finally:
-        recorder.delete()
+        recorder.stop()
         porcupine.delete()
         return False
 

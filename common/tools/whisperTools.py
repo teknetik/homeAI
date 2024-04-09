@@ -4,11 +4,12 @@ import time
 import wave
 import struct
 import os
+import logging
 
 from openai import OpenAI
 
 client = OpenAI()
-
+logger = logging.getLogger(__name__)
 
 def voice_detected(
     audio_data, sample_rate=16000, aggressiveness=3, volume_threshold=600
@@ -35,7 +36,7 @@ def voice_detected(
     rms = np.sqrt(np.mean(np.square(audio_frame)))
 
     if vad.is_speech(audio, sample_rate) and rms > volume_threshold:
-        print("Voice Speech detected")
+        logger.info("Voice Speech detected")
         return True
     else:
         return False
@@ -60,25 +61,57 @@ def is_silence(audio_data, threshold=100, window_duration=0.5, sample_rate=16000
     return std_dev < threshold
 
 
+# def record_until_silence(recorder, max_duration_seconds=10, silence_duration=1):
+#     """Record audio until silence is detected."""
+#     audio_data = []
+#     silence_start_time = None
+#     end_time = time.time() + max_duration_seconds
+#
+#     while time.time() < end_time:
+#         pcm = recorder.read()
+#         audio_data.extend(pcm)
+#
+#         if is_silence(audio_data[-len(pcm) :]):
+#             if silence_start_time is None:
+#                 silence_start_time = time.time()
+#             elif time.time() - silence_start_time > silence_duration:
+#                 break
+#         else:
+#             silence_start_time = None
+#     return audio_data
+
+def is_silence(pcm_chunk, threshold=1000):
+    """Check if the given PCM chunk is silent. You might need to adjust the threshold based on your microphone sensitivity."""
+    avg_amplitude = sum([abs(sample) for sample in pcm_chunk]) / len(pcm_chunk)
+    return avg_amplitude < threshold
+
 def record_until_silence(recorder, max_duration_seconds=10, silence_duration=1):
-    """Record audio until silence is detected."""
+    """Record audio until silence is detected, with terminal feedback."""
     audio_data = []
     silence_start_time = None
     end_time = time.time() + max_duration_seconds
+    print("Listening...", end='', flush=True)
 
     while time.time() < end_time:
-        pcm = recorder.read()
+        pcm = recorder.read()  # This should return a chunk of audio data as a list of integers.
         audio_data.extend(pcm)
 
-        if is_silence(audio_data[-len(pcm) :]):
+        # Only check the recent chunk for silence to improve efficiency
+        if is_silence(pcm):
             if silence_start_time is None:
                 silence_start_time = time.time()
+                print("\rSilence detected, waiting...", end='', flush=True)
             elif time.time() - silence_start_time > silence_duration:
+                print("\rSilence duration met. Recording stopped.", flush=True)
                 break
         else:
+            if silence_start_time is not None:
+                print("\rListening...", end='', flush=True)  # Reset the message when noise is detected
             silence_start_time = None
-    return audio_data
 
+    if not silence_start_time:
+        print("\rMax duration reached. Recording stopped.", flush=True)
+    return audio_data
 
 def transcribe_with_whisper(audio_data):
     """
@@ -99,9 +132,9 @@ def transcribe_with_whisper(audio_data):
           model="whisper-1",
           file=f
         )
-    print(response)
+    logger.info(response)
     try:
         os.remove("temp_audio.wav")
     except Exception as e:
-        print(f"Error deleting file: {e}")
+        logger.info(f"Error deleting file: {e}")
     return response
