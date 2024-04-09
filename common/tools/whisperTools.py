@@ -42,7 +42,7 @@ def voice_detected(
         return False
 
 
-def is_silence(audio_data, threshold=100, window_duration=0.5, sample_rate=16000):
+def is_silence(audio_data, threshold=200, window_duration=0.5, sample_rate=16000):
     """
     Detect if the audio data represents silence based on volume standard deviation over a window.
 
