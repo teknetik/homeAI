@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 def agent(recorder, memory):
 
     recorder.stop()
-    mp3Player.play_mp3("./common/agents/mp3/how_can_i_help.mp3")
+    mp3Player.play_mp3("./common/agents/mp3/listen.mp3")
     recorder.start()
 
     in_conversation = True
@@ -32,7 +32,7 @@ def agent(recorder, memory):
             ):
                 in_conversation = False
                 logger.info("Ending Conversation")
-                mp3Player.play_mp3("./common/agents/mp3/end_convo.mp3")
+                mp3Player.play_mp3("./common/agents/mp3/sleep.mp3")
                 recorder.stop()
             else:
                 recorder.stop()

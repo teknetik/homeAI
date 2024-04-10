@@ -17,6 +17,7 @@ openai = "*"
 langchainhub = "*"
 langchain-openai = "*"
 faiss-cpu = "*"
+pyaudio = "*"
 
 [dev-packages]
 

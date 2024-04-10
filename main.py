@@ -29,6 +29,7 @@ def main():
             logger.info("Waking up")
             recorder.start()
             stella.agent(recorder, memory)
+            sleeping = True
     return None
 
 
