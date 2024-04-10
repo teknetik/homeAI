@@ -8,6 +8,7 @@ from datetime import datetime
 logger = logging.getLogger(__name__)
 porcupine_access_key = os.getenv("PORCUPINE_ACCESS_KEY")
 
+
 def listen(keyword_paths, recorder):
     try:
         porcupine = pvporcupine.create(
@@ -48,7 +49,9 @@ def listen(keyword_paths, recorder):
             result = porcupine.process(pcm)
 
             if result >= 0:
-                logger.info("[%s] Detected %s" % (str(datetime.now()), keywords[result]))
+                logger.info(
+                    "[%s] Detected %s" % (str(datetime.now()), keywords[result])
+                )
                 return True
     except KeyboardInterrupt:
         logger.info("Stopping ...")

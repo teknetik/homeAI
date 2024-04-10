@@ -6,14 +6,15 @@ import logging
 
 
 # Set up logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 
 # Global variables
 # Porcupine
 keyword_paths = ["./common/agents/stella_en_linux_v3_0_0.ppn"]
-
 
 
 def main():
