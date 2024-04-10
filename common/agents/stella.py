@@ -1,9 +1,13 @@
 import logging
 import asyncio
+import os
 
 from common.tools import whisperTools
 from common.tools import mp3Player
-from stream import chat_completion
+if os.getenv("LLM_MODEL") == "groq":
+    from stream_groq import chat_completion
+else:
+    from stream import chat_completion
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +17,7 @@ def agent(recorder, memory):
     recorder.stop()
     mp3Player.play_mp3("./common/agents/mp3/listen.mp3")
     recorder.start()
-
+    logger.info("Waiting for speech")
     in_conversation = True
 
     while in_conversation:
@@ -38,7 +42,8 @@ def agent(recorder, memory):
                 recorder.stop()
                 try:
                     # Generate audio stream from Elevenlabs from the response
-                    asyncio.run(chat_completion(transcription.text))
+                    full_response = asyncio.run(chat_completion(transcription.text))
+                    logger.info(full_response)
                 except Exception as e:
                     logger.info(e)
                     pass

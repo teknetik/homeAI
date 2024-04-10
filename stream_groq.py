@@ -5,15 +5,15 @@ import base64
 import shutil
 import os
 import subprocess
-from openai import AsyncOpenAI
+from groq import AsyncGroq
 
 # Define API keys and voice ID
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
 VOICE_ID = "dhyOxsTWJRMmlB8yowNT"
+model = os.getenv("GROQ_MODEL")
 
-# Set OpenAI API key
-aclient = AsyncOpenAI(api_key=OPENAI_API_KEY)
+client = AsyncGroq(api_key=GROQ_API_KEY)
 
 def is_installed(lib_name):
     return shutil.which(lib_name) is not None
@@ -78,8 +78,8 @@ async def text_to_speech_input_streaming(voice_id, text_iterator):
 async def chat_completion(query):
     """Process the chat completion and handle streaming text to TTS,
     and also handle and store data within <data>...</data> tags."""
-    response = await aclient.chat.completions.create(
-        model="gpt-4-turbo-2024-04-09",
+    response = await client.chat.completions.create(
+        model=model,
         messages=[
         {
             "role": "system",

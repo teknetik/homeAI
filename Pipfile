@@ -18,6 +18,7 @@ langchainhub = "*"
 langchain-openai = "*"
 faiss-cpu = "*"
 pyaudio = "*"
+groq = "*"
 
 [dev-packages]
 
