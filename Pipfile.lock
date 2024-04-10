@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "cd4f5d1bdf8a404a091bd1419795c9e11aabc977c61f90d0a6fab2273cb8e52d"
+            "sha256": "35f714b004ff7c8a72b78c49a5d28da711bb8c6c6690f182fc2d72713af2cbd0"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -938,6 +938,15 @@
                 "sha256:2b45320af6dfaa1750f543d714b6d1c520a1688dec6fd24d339063ce0aaa9ac3"
             ],
             "version": "==0.2.2"
+        },
+        "pvkoala": {
+            "hashes": [
+                "sha256:5e017c671fc1338d42dc20f9dee003d0144bbba1757b6f1fcd6272c5308da242",
+                "sha256:8b153e076b4d14adccdcb4d800aa84e8d2f91e0640b959677582d3128cbcb249"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.7'",
+            "version": "==2.0.1"
         },
         "pvporcupine": {
             "hashes": [

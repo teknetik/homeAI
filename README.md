@@ -99,3 +99,21 @@ exit
 \```
 
 This command will return you to your system's global Python environment, where you can work on other projects or perform general tasks.
+
+
+## Change Log
+
+### Version 0.0.0.1
+
+- Initial release of HomeAI.
+- Integrated OpenAI's GPT-4-turbo for text generation and decision-making.
+- Utilized ElevenLabs for high-quality text-to-speech conversion.
+- Incorporated OpenAI Whisper for accurate speech-to-text transcription.
+- Integrated Pico Labs' Porcupine for efficient wake word detection.
+
+### Version 0.0.0.2
+
+- Added support for Groq LPU Inference Engine for faster AI processing.
+- Enhanced wake word detection accuracy using Pico Labs' Porcupine.
+- Improved text generation - Stella now creates shorter spoken responses, while asyncronously generating longer text responses.
+- Implemented Picovoice "Koala noise suppression for better speech-to-text accuracy.

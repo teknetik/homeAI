@@ -119,7 +119,8 @@ async def chat_completion(query):
                 end = speech_buffer.index("</speech>", start)
                 speech_content = speech_buffer[start:end]
 
-                await text_to_speech_input_streaming(VOICE_ID, speech_content.strip())
+                if os.getenv("VOICE") == "on":
+                    await text_to_speech_input_streaming(VOICE_ID, speech_content.strip())
                 speech_storage.append(speech_content.strip())
                 speech_buffer = speech_buffer[
                     end + len("</speech>") :

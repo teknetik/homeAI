@@ -1,3 +1,5 @@
+import os
+
 import common.tools.wake_word as wake_word
 import common.tools.voice_recorder as voice_recorder
 import common.agents.stella as stella
@@ -20,15 +22,17 @@ keyword_paths = ["./common/agents/stella_en_linux_v3_0_0.ppn"]
 def main():
     # Set up the wake word and listen
     sleeping = True
-    recorder = voice_recorder.listen()
+    voice_recorder.show_audio_devices()
+    dev = int(os.getenv("RECORDER_DEVICE"))
+    recorder = voice_recorder.listen(dev)
     # instantiate langchain memory
-    memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
     while sleeping:
+        logger.info("Listening for wake word")
         sleeping = wake_word.listen(keyword_paths, recorder)
         if not sleeping:
             logger.info("Waking up")
             recorder.start()
-            stella.agent(recorder, memory)
+            stella.agent(recorder)
             sleeping = True
     return None
 

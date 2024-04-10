@@ -13,7 +13,7 @@ else:
 logger = logging.getLogger(__name__)
 
 
-def agent(recorder, memory):
+def agent(recorder):
 
     recorder.stop()
     mp3Player.play_mp3("./common/agents/mp3/listen.mp3")

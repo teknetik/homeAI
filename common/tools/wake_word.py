@@ -8,7 +8,6 @@ from datetime import datetime
 logger = logging.getLogger(__name__)
 porcupine_access_key = os.getenv("PORCUPINE_ACCESS_KEY")
 
-
 def listen(keyword_paths, recorder):
     try:
         porcupine = pvporcupine.create(
@@ -62,5 +61,3 @@ def listen(keyword_paths, recorder):
         return False
 
 
-if __name__ == "__main__":
-    listen()

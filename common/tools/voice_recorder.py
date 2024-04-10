@@ -9,6 +9,6 @@ def show_audio_devices():
         logger.info("Device %d: %s" % (i, device))
 
 
-def listen(deviceIndex=0):
-    recorder = PvRecorder(device_index=deviceIndex, frame_length=512)
+def listen(deviceIndex):
+    recorder = PvRecorder(device_index=deviceIndex,frame_length=256)
     return recorder

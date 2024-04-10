@@ -19,6 +19,7 @@ langchain-openai = "*"
 faiss-cpu = "*"
 pyaudio = "*"
 groq = "*"
+pvkoala = "*"
 
 [dev-packages]
 
