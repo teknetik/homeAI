@@ -9,10 +9,13 @@ OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 # Set OpenAI API key
 openai = OpenAI(api_key=OPENAI_API_KEY)
 
+
 def stream_to_speakers(input) -> None:
     import pyaudio
 
-    player_stream = pyaudio.PyAudio().open(format=pyaudio.paInt16, channels=1, rate=24000, output=True)
+    player_stream = pyaudio.PyAudio().open(
+        format=pyaudio.paInt16, channels=1, rate=24000, output=True
+    )
 
     start_time = time.time()
 

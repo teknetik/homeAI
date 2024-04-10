@@ -10,10 +10,7 @@ client = ElevenLabs(api_key=ELEVENLABS_API_KEY)
 
 def stream_to_speakers(text) -> None:
 
-    audio_stream = client.generate(
-          text=text,
-          stream=True
-        )
+    audio_stream = client.generate(text=text, stream=True)
     stream(audio_stream)
 
 

@@ -15,15 +15,24 @@ VOICE_ID = "dhyOxsTWJRMmlB8yowNT"
 # Set OpenAI API key
 aclient = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
+
 def is_installed(lib_name):
     return shutil.which(lib_name) is not None
+
 
 async def stream(audio_stream):
     """Stream audio data using mpv player."""
     if not is_installed("mpv"):
-        raise ValueError("mpv not found, necessary to stream audio. Install instructions: https://mpv.io/installation/")
+        raise ValueError(
+            "mpv not found, necessary to stream audio. Install instructions: https://mpv.io/installation/"
+        )
 
-    mpv_process = subprocess.Popen(["mpv", "--no-cache", "--no-terminal", "--", "fd://0"], stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    mpv_process = subprocess.Popen(
+        ["mpv", "--no-cache", "--no-terminal", "--", "fd://0"],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
 
     print("Started streaming audio")
     async for chunk in audio_stream:
@@ -34,6 +43,7 @@ async def stream(audio_stream):
     if mpv_process.stdin:
         mpv_process.stdin.close()
     mpv_process.wait()
+
 
 async def text_to_speech_input_streaming(voice_id, text_iterator):
     """Send text to ElevenLabs API and stream the returned audio."""
@@ -66,14 +76,14 @@ async def text_to_speech_input_streaming(voice_id, text_iterator):
 
         listen_task = asyncio.create_task(stream(listen()))
 
-
         await websocket.send(
-                json.dumps({"text": text_iterator, "try_trigger_generation": True})
-            )
+            json.dumps({"text": text_iterator, "try_trigger_generation": True})
+        )
 
         await websocket.send(json.dumps({"text": ""}))
 
         await listen_task
+
 
 async def chat_completion(query):
     """Process the chat completion and handle streaming text to TTS,
@@ -81,15 +91,12 @@ async def chat_completion(query):
     response = await aclient.chat.completions.create(
         model="gpt-4-turbo-2024-04-09",
         messages=[
-        {
-            "role": "system",
-            "content": "You are a helpful assistant that responds to questions from the user. You always respond in JSON format which has two keys. \"Speech\" and \"Data\". A detailed response to the question should be stored in the \"Data\" key of the JSON object and wrappered in <data></data> opening/closing tags.. A short conversational version that's not too lengthy and can be easily spoken in a few seconds should be stored in \"Speech\" and the value should be wrapped in opening <speech> and closing </speech> tagh.\nExamples:\n{\n  \"Speech\": \"<speech>Yes, dogs can look up, though their range of motion might be more limited compared to humans.</speech>\",\n  \"Data\": \"<data>Dogs are capable of looking up but their neck and skull structure allows a more restricted range of upward vision compared to humans. This means while dogs can definitely look upwards, they won't have the same vertical range as humans do, and how high they can look can also depend on the breed and the individual dog’s anatomy.</data>\"\n}\n{\n  \"Speech\": \"<speech>Yes, ducks can look up. They have flexible necks that allow them to move their heads in various directions.</speech>\",\n  \"Data\": \"<data>Ducks have a good range of motion in their necks, enabling them to look up and around easily. This flexibility helps them stay alert to their surroundings and look for predators or other threats from different angles, including above.</data>\"\n}"
-        },
-        {
-            "role": "user",
-            "content": query
-        },
-    ],
+            {
+                "role": "system",
+                "content": 'You are a helpful assistant that responds to questions from the user. You always respond in JSON format which has two keys. "Speech" and "Data". A detailed response to the question should be stored in the "Data" key of the JSON object and wrappered in <data></data> opening/closing tags.. A short conversational version that\'s not too lengthy and can be easily spoken in a few seconds should be stored in "Speech" and the value should be wrapped in opening <speech> and closing </speech> tagh.\nExamples:\n{\n  "Speech": "<speech>Yes, dogs can look up, though their range of motion might be more limited compared to humans.</speech>",\n  "Data": "<data>Dogs are capable of looking up but their neck and skull structure allows a more restricted range of upward vision compared to humans. This means while dogs can definitely look upwards, they won\'t have the same vertical range as humans do, and how high they can look can also depend on the breed and the individual dog’s anatomy.</data>"\n}\n{\n  "Speech": "<speech>Yes, ducks can look up. They have flexible necks that allow them to move their heads in various directions.</speech>",\n  "Data": "<data>Ducks have a good range of motion in their necks, enabling them to look up and around easily. This flexibility helps them stay alert to their surroundings and look for predators or other threats from different angles, including above.</data>"\n}',
+            },
+            {"role": "user", "content": query},
+        ],
         temperature=1,
         stream=True,
     )
@@ -98,7 +105,7 @@ async def chat_completion(query):
     data_buffer = ""  # Buffer for data sections
     data_storage = []  # List to store data extracted from <data>...</data> tags
     speech_storage = []  # List to store speech extracted from <speech>...</speech> tags
-    full_response={}
+    full_response = {}
     async for chunk in response:
         delta = chunk.choices[0].delta
         if delta.content:
@@ -114,8 +121,10 @@ async def chat_completion(query):
 
                 await text_to_speech_input_streaming(VOICE_ID, speech_content.strip())
                 speech_storage.append(speech_content.strip())
-                speech_buffer = speech_buffer[end + len("</speech>"):].strip()  # Remove processed speech section
-                #print(speech_storage)
+                speech_buffer = speech_buffer[
+                    end + len("</speech>") :
+                ].strip()  # Remove processed speech section
+                # print(speech_storage)
 
             # Handle <data> tags
             while "<data>" in data_buffer and "</data>" in data_buffer:
@@ -125,19 +134,20 @@ async def chat_completion(query):
 
                 # Process or store the data content as needed
                 data_storage.append(data_content.strip())
-                data_buffer = data_buffer[end + len("</data>"):].strip()  # Remove processed data section
-                #print(data_storage)
+                data_buffer = data_buffer[
+                    end + len("</data>") :
+                ].strip()  # Remove processed data section
+                # print(data_storage)
 
             # For debugging: print buffer content if it's getting too large
             if len(speech_buffer) > 1000 or len(data_buffer) > 1000:
                 print("Warning: Buffer is large, might be missing a closing tag.")
                 print(f"Speech Buffer: {speech_buffer[:500]}...")
                 print(f"Data Buffer: {data_buffer[:500]}...")
-    full_response['Speech'] = speech_storage
-    full_response['Data'] = data_storage
-    #print(json.dumps(full_response, indent=2 ))
+    full_response["Speech"] = speech_storage
+    full_response["Data"] = data_storage
+    # print(json.dumps(full_response, indent=2 ))
     return full_response
-
 
 
 # Main execution
