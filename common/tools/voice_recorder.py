@@ -10,5 +10,5 @@ def show_audio_devices():
 
 
 def listen(deviceIndex):
-    recorder = PvRecorder(device_index=deviceIndex,frame_length=256)
+    recorder = PvRecorder(device_index=deviceIndex,frame_length=512)
     return recorder

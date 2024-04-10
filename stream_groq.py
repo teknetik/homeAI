@@ -141,7 +141,7 @@ async def chat_completion(query):
                 # print(data_storage)
 
             # For debugging: print buffer content if it's getting too large
-            if len(speech_buffer) > 1000 or len(data_buffer) > 1000:
+            if len(speech_buffer) > 10000 or len(data_buffer) > 10000:
                 print("Warning: Buffer is large, might be missing a closing tag.")
                 print(f"Speech Buffer: {speech_buffer[:500]}...")
                 print(f"Data Buffer: {data_buffer[:500]}...")
